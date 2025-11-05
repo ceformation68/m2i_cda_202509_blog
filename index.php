@@ -9,89 +9,56 @@
 	$strPage		= "index";
 	
 	require("_partial/header.php");
+	
+	// Récupérer les Articles
+	try{
+		// Connexion à la base de données
+		$db= new PDO(
+			"mysql:host=localhost;dbname=blog_php", // Serveur et BDD
+			"root", //Nom d'utilisateur de la base de données
+			"",// Mot de passe de la base de données
+			array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC) // Mode de renvoi
+		);
+		// Pour résoudre les problèmes d’encodage
+		$db->exec("SET CHARACTER SET utf8");
+		// Configuration des exceptions
+		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	} catch(PDOException $e) {
+		echo"Échec : " . $e->getMessage();
+	}
+	
+	$strQuery		= "SELECT articles.*, users.user_name, users.user_firstname	 
+						FROM articles 
+							INNER JOIN users ON article_creator = user_id;";
+	$arrArticles	= $db->query($strQuery)->fetchAll();
+	//var_dump($arrArticles);
+	
 ?>
         <section aria-label="Articles récents">
             <h2 class="visually-hidden">Les 4 derniers articles</h2>
             <div class="row mb-2">
-                <article class="col-md-6 mb-4">
-                    <div class="row g-0 border rounded overflow-hidden flex-md-row shadow-sm h-md-250 position-relative">
-                        <div class="col p-4 d-flex flex-column position-static">
-                            <h3 class="mb-2">Le devenir du JavaScript</h3>
-                            <div class="mb-2 text-body-secondary">
-                                <time datetime="2017-05-11">11 mai 2017</time>
-                                <span aria-label="Auteur"> - test</span>
-                            </div>
-                            <p class="mb-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-                            <a href="article-javascript.html" class="icon-link gap-1 icon-link-hover stretched-link" aria-label="Lire l'article complet sur le devenir du JavaScript">
-                                Lire la suite
-                                <i class="fas fa-arrow-right" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                        <div class="col-auto d-none d-lg-block">
-                            <img class="bd-placeholder-img" width="200" height="250" src="assets/images/js.png" alt="Logo JavaScript - Article sur l'évolution du JavaScript" loading="lazy">
-                        </div>
-                    </div>
-                </article>
-                
-                <article class="col-md-6 mb-4">
-                    <div class="row g-0 border rounded overflow-hidden flex-md-row shadow-sm h-md-250 position-relative">
-                        <div class="col p-4 d-flex flex-column position-static">
-                            <h3 class="mb-2">Qu'est-ce que le HTML?</h3>
-                            <div class="mb-2 text-body-secondary">
-                                <time datetime="2017-04-04">4 avril 2017</time>
-                                <span aria-label="Auteur"> - christel</span>
-                            </div>
-                            <p class="mb-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-                            <a href="article-html.html" class="icon-link gap-1 icon-link-hover stretched-link" aria-label="Lire l'article complet sur le HTML">
-                                Lire la suite
-                                <i class="fas fa-arrow-right" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                        <div class="col-auto d-none d-lg-block">
-                            <img class="bd-placeholder-img" width="200" height="250" src="assets/images/html.png" alt="Logo HTML5 - Introduction au langage HTML" loading="lazy">
-                        </div>
-                    </div>
-                </article>
+			<?php 
+				foreach ($arrArticles as $arrDetArticle){
+					//var_dump($arrDetArticle);
+					// Traitement de date
+					$objDate			= new DateTime($arrDetArticle['article_createdate']);
+					$objDateFormatter	= new IntlDateFormatter(
+												"fr_FR", // langue
+												IntlDateFormatter::LONG,  // format de date
+												IntlDateFormatter::NONE, // format heure
+												);
+					//$strDate 		= $objDate->format("d/m/Y");
+					$strDate 		= $objDateFormatter->format($objDate);
+					// Traitement du créateur
+					$strCreatorName = $arrDetArticle['user_name'].' '.$arrDetArticle['user_firstname'];
+					// Traitement du résumé
+					$strLength		= 45;
+					$strSummary		= substr($arrDetArticle['article_content'], 0, $strLength).((strlen($arrDetArticle['article_content'])>$strLength)?"...":"");
+					// Inclure le template de l'article
+					include("_partial/article.php");
+				}
+			?>
 
-                <article class="col-md-6 mb-4">
-                    <div class="row g-0 border rounded overflow-hidden flex-md-row shadow-sm h-md-250 position-relative">
-                        <div class="col p-4 d-flex flex-column position-static">
-                            <h3 class="mb-2">Utiliser le CSS correctement</h3>
-                            <div class="mb-2 text-body-secondary">
-                                <time datetime="2017-05-08">8 mai 2017</time>
-                                <span aria-label="Auteur"> - christel</span>
-                            </div>
-                            <p class="mb-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-                            <a href="article-css.html" class="icon-link gap-1 icon-link-hover stretched-link" aria-label="Lire l'article complet sur l'utilisation du CSS">
-                                Lire la suite
-                                <i class="fas fa-arrow-right" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                        <div class="col-auto d-none d-lg-block">
-                            <img class="bd-placeholder-img" width="200" height="250" src="assets/images/CSS.png" alt="Logo CSS3 - Guide d'utilisation des feuilles de style" loading="lazy">
-                        </div>
-                    </div>
-                </article>
-
-                <article class="col-md-6 mb-4">
-                    <div class="row g-0 border rounded overflow-hidden flex-md-row shadow-sm h-md-250 position-relative">
-                        <div class="col p-4 d-flex flex-column position-static">
-                            <h3 class="mb-2">Utiliser PhpMyAdmin</h3>
-                            <div class="mb-2 text-body-secondary">
-                                <time datetime="2017-05-21">21 mai 2017</time>
-                                <span aria-label="Auteur"> - christel</span>
-                            </div>
-                            <p class="mb-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-                            <a href="article-phpmyadmin.html" class="icon-link gap-1 icon-link-hover stretched-link" aria-label="Lire l'article complet sur PhpMyAdmin">
-                                Lire la suite
-                                <i class="fas fa-arrow-right" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                        <div class="col-auto d-none d-lg-block">
-                            <img class="bd-placeholder-img" width="200" height="250" src="assets/images/mysql.png" alt="Logo MySQL - Tutoriel PhpMyAdmin" loading="lazy">
-                        </div>
-                    </div>
-                </article>
             </div>
         </section>
 <?php
