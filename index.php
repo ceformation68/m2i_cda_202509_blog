@@ -29,7 +29,9 @@
 	
 	$strQuery		= "SELECT articles.*, users.user_name, users.user_firstname	 
 						FROM articles 
-							INNER JOIN users ON article_creator = user_id;";
+							INNER JOIN users ON article_creator = user_id
+						ORDER BY article_createdate DESC
+						LIMIT 4;";
 	$arrArticles	= $db->query($strQuery)->fetchAll();
 	//var_dump($arrArticles);
 	
