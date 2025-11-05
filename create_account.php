@@ -65,31 +65,34 @@
 ?>
 
 
-<form method="post">
-	<p>
+<form method="post" class="row">
+	<div class="mb-2 col-6">
 		<label>Nom</label>
 		<input type="text" name="name" value="<?php echo $strName; ?>" 
 			class="form-control  <?php if(isset($arrError['name'])) { echo "is-invalid"; } ?>" />
-	</p>
-	<p>
+	</div>
+	<div class="mb-2 col-6">
 		<label>Prénom</label>
-		<input type="text" name="firstname"  value="<?php echo $strFirstname; ?>"/>
-	</p>
-	<p>
+		<input type="text" name="firstname"  value="<?php echo $strFirstname; ?>"
+			class="form-control  <?php if(isset($arrError['firstname'])) { echo "is-invalid"; } ?>" />
+	</div>
+	<div class="mb-2 col-12">
 		<label>Mail</label>
-		<input type="text" name="mail"  value="<?php echo $strMail; ?>"/>
-	</p>
-	<p>
+		<input type="text" name="mail"  value="<?php echo $strMail; ?>"
+			class="form-control  <?php if(isset($arrError['mail'])) { echo "is-invalid"; } ?>" />
+	</div>
+	<div class="mb-2 col-6">
 		<label>Mot de passe</label>
-		<input type="password" name="pwd" />
-	</p>
-	<p>
+		<input type="password" name="pwd" 
+			class="form-control  <?php if(isset($arrError['pwd'])) { echo "is-invalid"; } ?>" />
+	</div>
+	<div class="mb-2 col-6">
 		<label>Confirmation du mot de passe</label>
-		<input type="password" name="confirm_pwd" />
-	</p>
-	<p>
-		<input type="submit" />
-	</p>
+		<input type="password" name="confirm_pwd" class="form-control" />
+	</div>
+	<div class="mb-2 col-12">
+		<input class="btn btn-primary" type="submit" />
+	</div>
 
 </form>
 
