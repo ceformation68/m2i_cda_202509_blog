@@ -10,3 +10,5 @@
 		$arrUsers	= $db->query($strQuery)->fetchAll();
 		return $arrUsers;
 	}
+	
+	

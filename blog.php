@@ -14,8 +14,12 @@
 	
 	$strKeywords	= $_GET['keywords']??'';
 	$intAuthor		= $_GET['author']??0;
+	$intPeriod		= $_GET['period']??0;
+	$strDate		= $_GET['date']??"";
+	$strStartDate	= $_GET['startdate']??"";
+	$strEndDate		= $_GET['enddate']??"";
 	// Récupération des articles
-	$arrArticles 	= findAll(0, $strKeywords, $intAuthor);
+	$arrArticles 	= findAll(0, $strKeywords, $intAuthor, $intPeriod, $strDate, $strStartDate, $strEndDate);
 	
 	// Récupération des utilisateurs
 	require("user_model.php");
@@ -52,7 +56,11 @@
                         <select class="form-select" id="author" name="author">
                             <option value="0">Tous les auteurs</option>
 							<?php foreach($arrUsers as $arrDetUser){ ?>
-								<option value="<?php echo $arrDetUser['user_id']; ?>"><?php echo $arrDetUser['user_name'].' '.$arrDetUser['user_firstname']; ?></option>
+								<option 
+									<?php echo ($intAuthor == $arrDetUser['user_id'])?" selected ":""; ?>
+									value="<?php echo $arrDetUser['user_id']; ?>">
+									<?php echo $arrDetUser['user_name'].' '.$arrDetUser['user_firstname']; ?>
+								</option>
 							<?php } ?>
                         </select>
                     </div>
@@ -67,7 +75,7 @@
                                     name="period" 
                                     id="period-exact" 
                                     value="0" 
-                                    checked
+                                    <?php echo ($intPeriod == 0)?" checked ":"" ?> 
                                     aria-controls="date-exact date-range">
                                 <label class="form-check-label" for="period-exact">
                                     Date exacte
@@ -80,6 +88,7 @@
                                     name="period" 
                                     id="period-range" 
                                     value="1"
+									<?php echo ($intPeriod == 1)?" checked ":"" ?> 
                                     aria-controls="date-exact date-range">
                                 <label class="form-check-label" for="period-range">
                                     Période
@@ -95,6 +104,7 @@
                             class="form-control" 
                             id="date" 
                             name="date"
+							value="<?php echo $strDate; ?>"
                             aria-describedby="date-help">
                         <small id="date-help" class="form-text text-muted">
                             Format: JJ/MM/AAAA
@@ -109,7 +119,8 @@
                                     type="date" 
                                     class="form-control" 
                                     id="startdate" 
-                                    name="startdate">
+                                    name="startdate"
+									value="<?php echo $strStartDate; ?>">
                             </div>
                             <div class="col-md-6">
                                 <label for="enddate" class="form-label">Date de fin</label>
@@ -117,7 +128,8 @@
                                     type="date" 
                                     class="form-control" 
                                     id="enddate" 
-                                    name="enddate">
+                                    name="enddate"
+									value="<?php echo $strEndDate; ?>">
                             </div>
                         </div>
                     </div>
