@@ -6,7 +6,6 @@
 		exit;
 	}	
 	
-	
 	// Récupérer les données de l'utilisateur
 	require("user_model.php");
 	$arrUser	= getUserById($_SESSION['user']['user_id']);
@@ -15,6 +14,7 @@
 	$strFirstname	= $_POST['firstname']??$arrUser['user_firstname']??"";
 	$strMail		= $_POST['mail']??$arrUser['user_mail']??"";
 	$strPwd			= $_POST['pwd']??"";
+	$strPseudo		= $_POST['pseudo']??$_COOKIE["pseudo"]??"";
 	
 	$arrError 		= array();
 	if (count($_POST) > 0){ // Le formulaire est envoyé
@@ -46,10 +46,18 @@
 			$boolUpdate = editUser($strName, $strFirstname, $strMail, $strPwd);
 			if ($boolUpdate){
 				// Si modification ok => on informe
-				$_SESSION['message'] = "Les modificiations ont bien été effectuées";
+				$_SESSION['message'] = "Les modifications ont bien été effectuées";
 				// Mettre à jour la session
 				$_SESSION['user']['user_name']	= $strName;
 				$_SESSION['user']['user_firstname']	= $strFirstname;
+				// Mettre à jour le pseudo si renseigné
+				if ($strPseudo != ""){
+					setcookie("pseudo", $strPseudo, time()+365*24*3600);
+				}else if (isset($_COOKIE['pseudo'])){
+					setcookie("pseudo", "", -1);
+				}
+				// Actualise l'entête
+				header("Refresh:5");
 			}else{
 				$arrError[] = "Un erreur s'est produite, contactez l'administrateur";
 			}
@@ -89,10 +97,14 @@
 		<input type="text" name="firstname"  value="<?php echo $strFirstname; ?>"
 			class="form-control  <?php if(isset($arrError['firstname'])) { echo "is-invalid"; } ?>" />
 	</div>
-	<div class="mb-2 col-12">
+	<div class="mb-2 col-6">
 		<label>Mail</label>
 		<input type="text" name="mail"  value="<?php echo $strMail; ?>"
 			class="form-control  <?php if(isset($arrError['mail'])) { echo "is-invalid"; } ?>" />
+	</div>
+	<div class="mb-2 col-6">
+		<label>Pseudo</label>
+		<input type="text" name="pseudo"  value="<?php echo $strPseudo; ?>" class="form-control" />
 	</div>
 	<div class="mb-2 col-6">
 		<label>Mot de passe</label>

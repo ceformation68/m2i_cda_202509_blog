@@ -3,7 +3,7 @@
 		if(isset($_SESSION['user'])){ // utilisateur connecté
 	?>
 	<a class="btn btn-sm" href="edit_account.php" title="Modifier mon compte" aria-label="Modifier mon compte">
-		Bonjour <?php echo $_SESSION['user']['user_firstname']; ?>
+		Bonjour <?php echo $_COOKIE["pseudo"]??$_SESSION['user']['user_firstname']; ?>
 		<span class="visually-hidden">Mon compte</span>
 	</a>
 	<span aria-hidden="true">|</span>

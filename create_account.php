@@ -70,9 +70,9 @@
 				// Sujet
 				$objMail->Subject	= "Création du compte - confirmation";
 				// Contenu du mail
-				$objMail->Body 	= "Merci de confirmer la création de votre compte à l'aide du lien suivant
-								...								
-								";
+				$objMail->Body 		= "Merci de confirmer la création de votre compte à l'aide du lien suivant
+										...								
+									";
 				// Envoi du mail avec vérification
 				if (!$objMail->send()) {
 					$arrErrors[] = 'Erreur de Mailer : ' . $objMail->ErrorInfo;
