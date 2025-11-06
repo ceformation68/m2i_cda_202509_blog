@@ -11,6 +11,25 @@
 		return $arrUsers;
 	}
 	
+	function getUserByMailAndPwd($strMail, $strPwd){
+		// Récupérer l'utilisateur
+		require("connexion.php");
+		
+		$strQuery	= "SELECT user_id, user_name, user_firstname
+						FROM users
+						WHERE user_mail = :mail
+							AND user_pwd = :pwd
+						";
+						
+		$rqPrepare	= $db->prepare($strQuery);
+		$rqPrepare->bindValue(":mail", $strMail, PDO::PARAM_STR);
+		$rqPrepare->bindValue(":pwd", $strPwd, PDO::PARAM_STR);
+		
+		$rqPrepare->execute();
+		return $rqPrepare->fetch();
+	}
+	
+	
 	function addUser($strName, $strFirstname, $strMail, $strPwd){
 		// Ajouter un utilisateur en BDD
 		require("connexion.php");

@@ -1,3 +1,10 @@
+<?php
+	if (session_status() === PHP_SESSION_NONE){
+		session_start();
+	}
+	//var_dump($_SESSION);
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -57,3 +64,7 @@
 				<?php } ?>
             </div>
         </section>
+
+<?php
+	require("_partial/message.php");
+?>

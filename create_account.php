@@ -1,4 +1,12 @@
  <?php
+	session_start();
+	
+ 	if(isset($_SESSION['user'])){ // utilisateur connecté
+		$_SESSION['message'] = "Vous êtes déjà connecté";
+		header("Location:edit_account.php");
+		exit;
+	}
+	
 	// Récupérer les données du formulaire
 	$strName		= $_POST['name']??"";
 	$strFirstname	= $_POST['firstname']??"";
@@ -52,15 +60,9 @@
 	$strPage		= "create_account";
 	
 	require("_partial/header.php");
-	//var_dump($arrError);
-	if (count($arrError) > 0){
-		echo "<div class='alert alert-danger'>";
-		foreach ($arrError as $strError){
-			echo "<p>".$strError."</p>";
-		}
-		echo "</div>";
-	}
 	
+	require("_partial/message.php");
+
 	
 ?>
 
