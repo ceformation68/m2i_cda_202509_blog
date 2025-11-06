@@ -39,7 +39,7 @@
                     <!-- Espace pour futur contenu -->
                 </div>
                 <div class="col-4 text-center">
-                    <a class="blog-header-logo text-body-emphasis text-decoration-none" href="index.html" aria-label="Retour à l'accueil">
+                    <a class="blog-header-logo text-body-emphasis text-decoration-none" href="index.php" aria-label="Retour à l'accueil">
                         <h1 class="h3 mb-0">Mon Blog</h1>
                     </a>
                 </div>
