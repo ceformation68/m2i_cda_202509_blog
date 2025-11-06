@@ -1,4 +1,6 @@
  <?php
+	use PHPMailer\PHPMailer\PHPMailer;
+	use PHPMailer\PHPMailer\Exception;
 	session_start();
 	
  	if(isset($_SESSION['user'])){ // utilisateur connecté
@@ -6,6 +8,8 @@
 		header("Location:edit_account.php");
 		exit;
 	}
+
+	include "config.php"; 
 	
 	// Récupérer les données du formulaire
 	$strName		= $_POST['name']??"";
@@ -41,9 +45,43 @@
 			require("user_model.php");
 			$boolInsert = addUser($strName, $strFirstname, $strMail, $strPwd);
 			if ($boolInsert){
-				// Si insertion ok => redirection login.php
-				header("Location:login.php");
-				exit; // par sécurité arrêter l'exécution
+				// Si insertion ok 
+				// => Envoyer le mail de demande de confirmation du compte
+				// A déporter dans un autre fichier pour réutiliser
+				require 'libs/PHPMailer/Exception.php';
+				require 'libs/PHPMailer/PHPMailer.php';
+				require 'libs/PHPMailer/SMTP.php';
+				$objMail = new PHPMailer();
+				$objMail->IsSMTP();
+				$objMail->CharSet 		= PHPMailer::CHARSET_UTF8;
+				$objMail->Mailer 		= "smtp";
+				$objMail->SMTPDebug		= 0;
+				$objMail->SMTPAuth		= TRUE;
+				$objMail->SMTPSecure	= "tls";
+				$objMail->Port 			= 587;
+				$objMail->Host 			= MAIL_HOST;
+				$objMail->Username		= MAIL_USER;
+				$objMail->Password		= MAIL_PWD;
+				$objMail->IsHTML(true);
+				// Expéditeur
+				$objMail->setFrom('contact@ce-formation.com', 'christel');
+				// Destinataire
+				$objMail->addAddress($strMail, $strName);
+				// Sujet
+				$objMail->Subject	= "Création du compte - confirmation";
+				// Contenu du mail
+				$objMail->Body 	= "Merci de confirmer la création de votre compte à l'aide du lien suivant
+								...								
+								";
+				// Envoi du mail avec vérification
+				if (!$objMail->send()) {
+					$arrErrors[] = 'Erreur de Mailer : ' . $objMail->ErrorInfo;
+				} else{
+					$_SESSION['message'] 	= "Votre compte a bien été créé";
+					// => redirection login.php
+					header("Location:login.php");
+					exit; // par sécurité arrêter l'exécution
+				}
 			}else{
 				$arrError[] = "Un erreur s'est produite, contactez l'administrateur";
 			}
