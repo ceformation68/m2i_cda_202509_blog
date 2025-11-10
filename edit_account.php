@@ -7,49 +7,49 @@
 	}	
 	
 	// Récupérer les données de l'utilisateur
-	require("user_model.php");
-	$arrUser	= getUserById($_SESSION['user']['user_id']);
+	require("models/user_model.php");
+	$objUserModel	= new User_model();
+	$arrUser		= $objUserModel->getUserById($_SESSION['user']['user_id']);
 	
-	$strName		= $_POST['name']??$arrUser['user_name']??"";
-	$strFirstname	= $_POST['firstname']??$arrUser['user_firstname']??"";
-	$strMail		= $_POST['mail']??$arrUser['user_mail']??"";
-	$strPwd			= $_POST['pwd']??"";
+	require("entities/user_entity.php");
+	$objUser		= new User();
+	$objUser->hydrate($arrUser);
+
 	$strPseudo		= $_POST['pseudo']??$_COOKIE["pseudo"]??"";
 	
 	$arrError 		= array();
 	if (count($_POST) > 0){ // Le formulaire est envoyé
-		// Filtrer les données 
-		$strName		= htmlspecialchars(trim($strName));
+		$objUser->hydrate($_POST);
 	
 		// Tester les données reçues
-		if ($strName == ""){
+		if ($objUser->getName() == ""){
 			$arrError['name'] = "Le nom est obligatoire";
 		}
-		if ($strFirstname == ""){
+		if ($objUser->getFirstname() == ""){
 			$arrError['firstname'] = "Le prénom est obligatoire";
 		}	
-		if ($strMail == ""){
+		if ($objUser->getMail() == ""){
 			$arrError['mail'] = "Le mail est obligatoire";
-		}else if (!filter_var($strMail, FILTER_VALIDATE_EMAIL)){
+		}else if (!filter_var($objUser->getMail(), FILTER_VALIDATE_EMAIL)){
 			$arrError['mail'] = "Le mail est invalide";
 		}
 
-		if ($strPwd != ""){
-			if ($strPwd != $_POST['confirm_pwd']){
+		if ($objUser->getPwd() != ""){
+			if ($objUser->getPwd() != $_POST['confirm_pwd']){
 				$arrError['pwd'] = "Le mot de passe doit être identique à sa confirmation";
 			}
 		}
 		
 		// Si pas d'erreur => modification en bdd
 		if (count($arrError) == 0){
-			require_once("user_model.php"); // par sécurité si pas déjà inclus
-			$boolUpdate = editUser($strName, $strFirstname, $strMail, $strPwd);
+			//require_once("user_model.php"); // par sécurité si pas déjà inclus
+			$boolUpdate = $objUserModel->editUser($objUser);
 			if ($boolUpdate){
 				// Si modification ok => on informe
 				$_SESSION['message'] = "Les modifications ont bien été effectuées";
 				// Mettre à jour la session
-				$_SESSION['user']['user_name']	= $strName;
-				$_SESSION['user']['user_firstname']	= $strFirstname;
+				$_SESSION['user']['user_name']		= $objUser->getName();
+				$_SESSION['user']['user_firstname']	= $objUser->getFirstname();
 				// Mettre à jour le pseudo si renseigné
 				if ($strPseudo != ""){
 					setcookie("pseudo", $strPseudo, time()+365*24*3600);
@@ -74,32 +74,22 @@
 	$strPage		= "edit_account";
 	
 	require("_partial/header.php");
-	//var_dump($arrError);
-	/*if (count($arrError) > 0){
-		echo "<div class='alert alert-danger'>";
-		foreach ($arrError as $strError){
-			echo "<p>".$strError."</p>";
-		}
-		echo "</div>";
-	}*/
-	
-	
 ?>
 
 <form method="post" class="row">
 	<div class="mb-2 col-6">
 		<label>Nom</label>
-		<input type="text" name="name" value="<?php echo $strName; ?>" 
+		<input type="text" name="name" value="<?php echo $objUser->getName(); ?>" 
 			class="form-control  <?php if(isset($arrError['name'])) { echo "is-invalid"; } ?>" />
 	</div>
 	<div class="mb-2 col-6">
 		<label>Prénom</label>
-		<input type="text" name="firstname"  value="<?php echo $strFirstname; ?>"
+		<input type="text" name="firstname"  value="<?php echo $objUser->getFirstname(); ?>"
 			class="form-control  <?php if(isset($arrError['firstname'])) { echo "is-invalid"; } ?>" />
 	</div>
 	<div class="mb-2 col-6">
 		<label>Mail</label>
-		<input type="text" name="mail"  value="<?php echo $strMail; ?>"
+		<input type="text" name="mail"  value="<?php echo $objUser->getMail(); ?>"
 			class="form-control  <?php if(isset($arrError['mail'])) { echo "is-invalid"; } ?>" />
 	</div>
 	<div class="mb-2 col-6">

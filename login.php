@@ -23,8 +23,9 @@
 
 		// Si pas d'erreur => vérification de l'utilisateur en BDD
 		if (count($arrError) == 0){
-			require("user_model.php");
-			$arrUser	= getUserByMailAndPwd($strMail, $strPwd);
+			require("models/user_model.php");
+			$objUserModel	= new User_model();
+			$arrUser		= $objUserModel->getUserByMailAndPwd($strMail, $strPwd);
 			if($arrUser === false){ // utilisateur non trouvé !$arrUser
 				$arrError[] = "Erreur de connexion";
 			}else{ // utilisateur trouvé
