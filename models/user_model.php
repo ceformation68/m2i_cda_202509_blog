@@ -1,6 +1,4 @@
 <?php
-	require("models/mother_model.php");
-	
 	class User_model extends Model_mother{
 		
 		public function findAllUser(){
@@ -44,8 +42,6 @@
 		
 		function addUser($strName, $strFirstname, $strMail, $strPwd){
 			// Ajouter un utilisateur en BDD
-			require("connexion.php");
-			
 			$strQuery	= "INSERT INTO users (user_name, user_firstname, 
 							user_mail, user_pwd)
 							VALUES (:name, :firstname, :mail, :pwd)";
@@ -61,8 +57,6 @@
 		
 		function editUser($objUser){
 			// Modifier un utilisateur en BDD
-			require("connexion.php");
-			
 			$strQuery	= "UPDATE users 
 							SET user_name = :name
 								, user_firstname = :firstname

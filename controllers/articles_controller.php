@@ -1,4 +1,5 @@
 <?php
+    require("models/article_model.php");
 
     class ArticlesCtrl {
 
@@ -15,9 +16,9 @@
 
             require("views/_partial/header.php");
 
-            require("article_model.php");
+            $objArticleModel    = new Article_model();
 
-            $arrArticles = findAll(4);
+            $arrArticles = $objArticleModel->findAll(4);
 
             include("views/home.php");
 
@@ -37,7 +38,8 @@
 
             require("views/_partial/header.php");
 
-            require("article_model.php");
+
+            $objArticleModel    = new Article_model();
 
             $strKeywords	= $_GET['keywords']??'';
             $intAuthor		= $_GET['author']??0;
@@ -46,11 +48,12 @@
             $strStartDate	= $_GET['startdate']??"";
             $strEndDate		= $_GET['enddate']??"";
             // Récupération des articles
-            $arrArticles 	= findAll(0, $strKeywords, $intAuthor, $intPeriod, $strDate, $strStartDate, $strEndDate);
+            $arrArticles 	= $objArticleModel->findAll(0, $strKeywords, $intAuthor, $intPeriod, $strDate, $strStartDate, $strEndDate);
 
             // Récupération des utilisateurs
             require("models/user_model.php");
-            $arrUsers 		= findAllUser();
+            $objUserModel = new User_model();
+            $arrUsers 		= $objUserModel->findAllUser();
             //	var_dump($arrUsers);
 
             include("views/blog.php");

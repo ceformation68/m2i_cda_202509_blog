@@ -1,22 +1,246 @@
 <?php
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+
+    require("models/user_model.php");
+
 
     class UsersCtrl {
 
-
         public function login(){
+            if (isset($_SESSION['user'])) { // utilisateur connecté
+                $_SESSION['message'] = "Vous êtes déjà connecté";
+                header("Location:edit_account.php");
+                exit;
+            }
+            // Récupérer les données du formulaire
+            $strMail = $_POST['mail'] ?? "";
+            $strPwd = $_POST['pwd'] ?? "";
+
+            $arrError = array();
+            if (count($_POST) > 0) { // Le formulaire est envoyé
+                if ($strMail == "") {
+                    $arrError['mail'] = "Le mail est obligatoire";
+                } else if (!filter_var($strMail, FILTER_VALIDATE_EMAIL)) {
+                    $arrError['mail'] = "Le mail est invalide";
+                }
+                if ($strPwd == "") {
+                    $arrError['pwd'] = "Le mot de passe est obligatoire";
+                }
+
+                // Si pas d'erreur => vérification de l'utilisateur en BDD
+                if (count($arrError) == 0) {
+                    $objUserModel = new User_model();
+                    $arrUser = $objUserModel->getUserByMailAndPwd($strMail, $strPwd);
+                    if ($arrUser === false) { // utilisateur non trouvé !$arrUser
+                        $arrError[] = "Erreur de connexion";
+                    } else { // utilisateur trouvé
+                        $_SESSION['user'] = $arrUser;
+                        header("Location:index.php");
+                        exit;
+                    }
+                }
+            }
+            // Création des variables d'affichage
+            $strTitle = "Se connecter";
+            $strH1 = "Se connecter";
+            $strMetaDesc = "Se connecter";
+            $strDesc = "Page de se connecter";
+
+            // Variable technique
+            $strPage = "login";
+
+            require("views/_partial/header.php");
             include("views/login.php");
+            require("views/_partial/footer.php");
         }
 
-        public function logour(){
+        public function logout(){
+            unset($_SESSION['user']);
 
+            $_SESSION['message'] = "Vous êtes déconnecté";
+            header("Location:index.php");
+            exit;
         }
 
         public function create_account(){
+
+
+
+            if (isset($_SESSION['user'])) { // utilisateur connecté
+                $_SESSION['message'] = "Vous êtes déjà connecté";
+                header("Location:edit_account.php");
+                exit;
+            }
+
+            include "config/config.php";
+
+            // Récupérer les données du formulaire
+            $strName = $_POST['name'] ?? "";
+            $strFirstname = $_POST['firstname'] ?? "";
+            $strMail = $_POST['mail'] ?? "";
+            $strPwd = $_POST['pwd'] ?? "";
+
+            $arrError = array();
+            if (count($_POST) > 0) { // Le formulaire est envoyé
+                // Filtrer les données
+                $strName = htmlspecialchars(trim($strName));
+
+                // Tester les données reçues
+                if ($strName == "") {
+                    $arrError['name'] = "Le nom est obligatoire";
+                }
+                if ($strFirstname == "") {
+                    $arrError['firstname'] = "Le prénom est obligatoire";
+                }
+                if ($strMail == "") {
+                    $arrError['mail'] = "Le mail est obligatoire";
+                } else if (!filter_var($strMail, FILTER_VALIDATE_EMAIL)) {
+                    $arrError['mail'] = "Le mail est invalide";
+                }
+                if ($strPwd == "") {
+                    $arrError['pwd'] = "Le mot de passe est obligatoire";
+                } else if ($strPwd != $_POST['confirm_pwd']) {
+                    $arrError['pwd'] = "Le mot de passe doit être identique à sa confirmation";
+                }
+
+                // Si pas d'erreur => insertion en bdd
+                if (count($arrError) == 0) {
+                    $objUserModel = new User_model();
+                    $boolInsert = $objUserModel->addUser($strName, $strFirstname, $strMail, $strPwd);
+                    if ($boolInsert) {
+                        // Si insertion ok
+                        // => Envoyer le mail de demande de confirmation du compte
+                        // A déporter dans un autre fichier pour réutiliser
+                        require 'libs/PHPMailer/Exception.php';
+                        require 'libs/PHPMailer/PHPMailer.php';
+                        require 'libs/PHPMailer/SMTP.php';
+                        $objMail = new PHPMailer();
+                        $objMail->IsSMTP();
+                        $objMail->CharSet = PHPMailer::CHARSET_UTF8;
+                        $objMail->Mailer = "smtp";
+                        $objMail->SMTPDebug = 0;
+                        $objMail->SMTPAuth = TRUE;
+                        $objMail->SMTPSecure = "tls";
+                        $objMail->Port = 587;
+                        $objMail->Host = MAIL_HOST;
+                        $objMail->Username = MAIL_USER;
+                        $objMail->Password = MAIL_PWD;
+                        $objMail->IsHTML(true);
+                        // Expéditeur
+                        $objMail->setFrom('contact@ce-formation.com', 'christel');
+                        // Destinataire
+                        $objMail->addAddress($strMail, $strName);
+                        // Sujet
+                        $objMail->Subject = "Création du compte - confirmation";
+                        // Contenu du mail
+                        $objMail->Body = "Merci de confirmer la création de votre compte à l'aide du lien suivant
+										...								
+									";
+                        // Envoi du mail avec vérification
+                        if (!$objMail->send()) {
+                            $arrErrors[] = 'Erreur de Mailer : ' . $objMail->ErrorInfo;
+                        } else {
+                            $_SESSION['message'] = "Votre compte a bien été créé";
+                            // => redirection login.php
+                            header("Location:index.php?ctrl=users&action=login");
+                            exit; // par sécurité arrêter l'exécution
+                        }
+                    } else {
+                        $arrError[] = "Un erreur s'est produite, contactez l'administrateur";
+                    }
+                }
+            }
+
+            // Création des variables d'affichage
+            $strTitle = "Créer un compte";
+            $strH1 = "Créer un compte";
+            $strMetaDesc = "Créer un compte";
+            $strDesc = "Page de création de compte";
+
+            // Variable technique
+            $strPage = "create_account";
+
+            require("views/_partial/header.php");
             include("views/create_account.php");
+            require("views/_partial/footer.php");
         }
 
         public function edit_account(){
+            if(!isset($_SESSION['user'])){ // utilisateur non connecté
+                header("Location:error_403.php");
+                exit;
+            }
+
+            // Récupérer les données de l'utilisateur
+            $objUserModel	= new User_model();
+            $arrUser		= $objUserModel->getUserById($_SESSION['user']['user_id']);
+
+            require("entities/user_entity.php");
+            $objUser		= new User();
+            $objUser->hydrate($arrUser);
+
+            $strPseudo		= $_POST['pseudo']??$_COOKIE["pseudo"]??"";
+
+            $arrError 		= array();
+            if (count($_POST) > 0){ // Le formulaire est envoyé
+                $objUser->hydrate($_POST);
+
+                // Tester les données reçues
+                if ($objUser->getName() == ""){
+                    $arrError['name'] = "Le nom est obligatoire";
+                }
+                if ($objUser->getFirstname() == ""){
+                    $arrError['firstname'] = "Le prénom est obligatoire";
+                }
+                if ($objUser->getMail() == ""){
+                    $arrError['mail'] = "Le mail est obligatoire";
+                }else if (!filter_var($objUser->getMail(), FILTER_VALIDATE_EMAIL)){
+                    $arrError['mail'] = "Le mail est invalide";
+                }
+
+                if ($objUser->getPwd() != ""){
+                    if ($objUser->getPwd() != $_POST['confirm_pwd']){
+                        $arrError['pwd'] = "Le mot de passe doit être identique à sa confirmation";
+                    }
+                }
+
+                // Si pas d'erreur => modification en bdd
+                if (count($arrError) == 0){
+                    //require_once("user_model.php"); // par sécurité si pas déjà inclus
+                    $boolUpdate = $objUserModel->editUser($objUser);
+                    if ($boolUpdate){
+                        // Si modification ok => on informe
+                        $_SESSION['message'] = "Les modifications ont bien été effectuées";
+                        // Mettre à jour la session
+                        $_SESSION['user']['user_name']		= $objUser->getName();
+                        $_SESSION['user']['user_firstname']	= $objUser->getFirstname();
+                        // Mettre à jour le pseudo si renseigné
+                        if ($strPseudo != ""){
+                            setcookie("pseudo", $strPseudo, time()+365*24*3600);
+                        }else if (isset($_COOKIE['pseudo'])){
+                            setcookie("pseudo", "", -1);
+                        }
+                        // Actualise l'entête
+                        header("Refresh:5");
+                    }else{
+                        $arrError[] = "Un erreur s'est produite, contactez l'administrateur";
+                    }
+                }
+            }
+
+            // Création des variables d'affichage
+            $strTitle 		= "Modifier son compte";
+            $strH1 			= "Modifier son compte";
+            $strMetaDesc 	= "Modifier son compte";
+            $strDesc		= "Page de modification de son compte";
+
+            // Variable technique
+            $strPage		= "edit_account";
+
+            require("views/_partial/header.php");
             include("views/edit_account.php");
+            require("views/_partial/footer.php");
         }
 
 

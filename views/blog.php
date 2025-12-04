@@ -139,7 +139,7 @@
 					$strCreatorName = $arrDetArticle['user_name'].' '.$arrDetArticle['user_firstname'];
 					// Traitement du résumé
 					$strLength		= 45;
-					$strSummary		= blog . phpsubstr($arrDetArticle['article_content'], 0, $strLength) . ((strlen($arrDetArticle['article_content']) > $strLength) ? "..." : "");
+					$strSummary		= substr($arrDetArticle['article_content'], 0, $strLength) . ((strlen($arrDetArticle['article_content']) > $strLength) ? "..." : "");
 					// Inclure le template de l'article
 					include("_partial/article.php");
 				}
