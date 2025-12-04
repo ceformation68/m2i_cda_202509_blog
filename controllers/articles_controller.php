@@ -1,6 +1,6 @@
 <?php
     require("models/article_model.php");
-
+    require("entities/article_entity.php");
 /**
  * Controller des articles
  */
@@ -20,9 +20,19 @@
             // Variable technique
             $this->_arrData['strPage']		= "index";
 
-            $objArticleModel    = new Article_model();
+            $objArticleModel                = new Article_model();
 
-            $this->_arrData['arrArticles'] = $objArticleModel->findAll(4);
+            $arrArticles                    = $objArticleModel->findAll(4);
+
+            // On parcourt le tableau pour créer des objets
+            $arrArticlesToDisplay           = array();
+            foreach($arrArticles as $arrDetArticle){
+                $objArticle = new Article();
+                $objArticle->hydrate($arrDetArticle);
+                $arrArticlesToDisplay[] = $objArticle;
+            }
+
+            $this->_arrData['arrArticles'] = $arrArticlesToDisplay;
 
             $this->_display("home");
 
@@ -53,7 +63,18 @@
                 'strEndDate'	=> $_POST['enddate']??"");
 
             // Récupération des articles
-            $this->_arrData['arrArticles'] 	= $objArticleModel->findAll(0);
+            $arrArticles                    = $objArticleModel->findAll();
+
+            // On parcourt le tableau pour créer des objets
+            $arrArticlesToDisplay           = array();
+            foreach($arrArticles as $arrDetArticle){
+                $objArticle = new Article();
+                $objArticle->hydrate($arrDetArticle);
+                $arrArticlesToDisplay[] = $objArticle;
+            }
+
+            $this->_arrData['arrArticles']  = $arrArticlesToDisplay;
+
             $this->_arrData['arrSearch']	= $objArticleModel->_arrSearch;
 
             // Récupération des utilisateurs

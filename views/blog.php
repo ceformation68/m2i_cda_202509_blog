@@ -124,22 +124,7 @@
             <h3 id="articles-heading" class="visually-hidden">Liste des articles</h3>
             <div class="row mb-2">
 			<?php 
-				foreach ($arrArticles as $arrDetArticle){
-					//var_dump($arrDetArticle);
-					// Traitement de date
-					$objDate			= new DateTime($arrDetArticle['article_createdate']);
-					$objDateFormatter	= new IntlDateFormatter(
-												"fr_FR", // langue
-												IntlDateFormatter::LONG,  // format de date
-												IntlDateFormatter::NONE, // format heure
-												);
-					//$strDate 		= $objDate->format("d/m/Y");
-					$strDate 		= $objDateFormatter->format($objDate);
-					// Traitement du créateur
-					$strCreatorName = $arrDetArticle['user_name'].' '.$arrDetArticle['user_firstname'];
-					// Traitement du résumé
-					$strLength		= 45;
-					$strSummary		= substr($arrDetArticle['article_content'], 0, $strLength) . ((strlen($arrDetArticle['article_content']) > $strLength) ? "..." : "");
+				foreach ($arrArticles as $objArticle){
 					// Inclure le template de l'article
 					include("_partial/article.php");
 				}

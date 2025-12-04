@@ -5,7 +5,7 @@
  */
 class Article_model extends Model_mother
 {
-    public $_arrSearch = [];
+    public array $_arrSearch = [];
 
     /**
      * Recherche des articles
@@ -14,9 +14,8 @@ class Article_model extends Model_mother
      */
     public function findAll(int $intLimit = 0)
     {
-
         // Récupérer les Articles
-        $strQuery = "SELECT articles.*, users.user_name, users.user_firstname	 
+        $strQuery = "SELECT articles.*, CONCAT(users.user_name, ' ', users.user_firstname) AS article_creator_name	 
 							FROM articles 
 								INNER JOIN users ON article_creator = user_id";
 
