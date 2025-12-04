@@ -1,64 +1,73 @@
 <?php
     require("models/article_model.php");
 
-    class ArticlesCtrl {
+/**
+ * Controller des articles
+ */
+    class ArticlesCtrl extends MotherCtrl {
 
-
+        /**
+         * Page d'accueil
+         * @return void
+         */
         public function home(){
             // Création des variables d'affichage
-            $strTitle 		= "Accueil";
-            $strH1 			= "Accueil";
-            $strMetaDesc 	= "Découvrez les derniers articles sur le développement web : JavaScript, HTML, CSS, PHP et bases de données. Tutoriels et conseils pour développeurs.";
-            $strDesc		= "Découvrez nos derniers articles sur le développement web";
+            $this->_arrData['strTitle']		= "Accueil";
+            $this->_arrData['strH1']		= "Accueil";
+            $this->_arrData['strMetaDesc'] 	= "Découvrez les derniers articles sur le développement web : JavaScript, HTML, CSS, PHP et bases de données. Tutoriels et conseils pour développeurs.";
+            $this->_arrData['strDesc']		= "Découvrez nos derniers articles sur le développement web";
 
             // Variable technique
-            $strPage		= "index";
-
-            require("views/_partial/header.php");
+            $this->_arrData['strPage']		= "index";
 
             $objArticleModel    = new Article_model();
 
-            $arrArticles = $objArticleModel->findAll(4);
+            $this->_arrData['arrArticles'] = $objArticleModel->findAll(4);
 
-            include("views/home.php");
-
-            require("views/_partial/footer.php");
+            $this->_display("home");
 
         }
 
+        /**
+         * Page blog
+         * @return void
+         */
         public function blog(){
             // Création des variables d'affichage
-            $strTitle 		= "Blog - Tous les articles";
-            $strH1 			= "Mon blog";
-            $strMetaDesc 	= "Découvrez qui nous sommes : notre équipe passionnée de développement web, notre mission et nos valeurs. Formations et expertise en programmation.";
-            $strDesc		= "Découvrez notre histoire, notre équipe et notre passion pour le développement web";
+            $this->_arrData['strTitle'] 	= "Blog - Tous les articles";
+            $this->_arrData['strH1'] 		= "Mon blog";
+            $this->_arrData['strMetaDesc'] 	= "Découvrez qui nous sommes : notre équipe passionnée de développement web, notre mission et nos valeurs. Formations et expertise en programmation.";
+            $this->_arrData['strDesc']		= "Découvrez notre histoire, notre équipe et notre passion pour le développement web";
 
             // Variable technique
-            $strPage		= "blog";
-
-            require("views/_partial/header.php");
-
+            $this->_arrData['strPage']		= "blog";
 
             $objArticleModel    = new Article_model();
 
-            $strKeywords	= $_GET['keywords']??'';
-            $intAuthor		= $_GET['author']??0;
-            $intPeriod		= $_GET['period']??0;
-            $strDate		= $_GET['date']??"";
-            $strStartDate	= $_GET['startdate']??"";
-            $strEndDate		= $_GET['enddate']??"";
+            $strKeywords	= $_POST['keywords']??'';
+            $intAuthor		= $_POST['author']??0;
+            $intPeriod		= $_POST['period']??0;
+            $strDate		= $_POST['date']??"";
+            $strStartDate	= $_POST['startdate']??"";
+            $strEndDate		= $_POST['enddate']??"";
             // Récupération des articles
-            $arrArticles 	= $objArticleModel->findAll(0, $strKeywords, $intAuthor, $intPeriod, $strDate, $strStartDate, $strEndDate);
+            $this->_arrData['arrArticles'] 	= $objArticleModel->findAll(0, $strKeywords, $intAuthor, $intPeriod, $strDate, $strStartDate, $strEndDate);
+
+            $this->_arrData['strKeywords']		= $strKeywords;
+            $this->_arrData['intAuthor']		= $intAuthor;
+            $this->_arrData['intPeriod']		= $intPeriod;
+            $this->_arrData['strDate']		    = $strDate;
+            $this->_arrData['strStartDate']	    = $strStartDate;
+            $this->_arrData['strEndDate']		= $strEndDate;
+
 
             // Récupération des utilisateurs
             require("models/user_model.php");
             $objUserModel = new User_model();
-            $arrUsers 		= $objUserModel->findAllUser();
-            //	var_dump($arrUsers);
+            $this->_arrData['arrUsers'] 		= $objUserModel->findAllUser();
 
-            include("views/blog.php");
+            $this->_display("blog");
 
-            require("views/_partial/footer.php");
         }
 
 

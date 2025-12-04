@@ -5,8 +5,15 @@
     require("models/user_model.php");
 
 
-    class UsersCtrl {
+    /**
+     * Controller des utilisateurs
+     */
+    class UsersCtrl extends MotherCtrl {
 
+        /**
+         * Page de connexion
+         * @return void
+         */
         public function login(){
             if (isset($_SESSION['user'])) { // utilisateur connecté
                 $_SESSION['message'] = "Vous êtes déjà connecté";
@@ -42,19 +49,21 @@
                 }
             }
             // Création des variables d'affichage
-            $strTitle = "Se connecter";
-            $strH1 = "Se connecter";
-            $strMetaDesc = "Se connecter";
-            $strDesc = "Page de se connecter";
+            $this->_arrData['strTitle']     = "Se connecter";
+            $this->_arrData['strH1']        = "Se connecter";
+            $this->_arrData['strMetaDesc']  = "Se connecter";
+            $this->_arrData['strDesc']      = "Page de se connecter";
+            $this->_arrData['strMail']      = $strMail;
+            $this->_arrData['arrError']     = $arrError;
 
             // Variable technique
-            $strPage = "login";
-
-            require("views/_partial/header.php");
-            include("views/login.php");
-            require("views/_partial/footer.php");
+            $this->_arrData['strPage'] = "login";
+            $this->_display("login");
         }
 
+        /**
+         * Déconnexion
+         */
         public function logout(){
             unset($_SESSION['user']);
 
@@ -63,10 +72,12 @@
             exit;
         }
 
+        /**
+         * Page de création d'un compte
+         * @return void
+         * @throws Exception
+         */
         public function create_account(){
-
-
-
             if (isset($_SESSION['user'])) { // utilisateur connecté
                 $_SESSION['message'] = "Vous êtes déjà connecté";
                 header("Location:edit_account.php");
@@ -76,10 +87,10 @@
             include "config/config.php";
 
             // Récupérer les données du formulaire
-            $strName = $_POST['name'] ?? "";
-            $strFirstname = $_POST['firstname'] ?? "";
-            $strMail = $_POST['mail'] ?? "";
-            $strPwd = $_POST['pwd'] ?? "";
+            $strName        = $_POST['name'] ?? "";
+            $strFirstname   = $_POST['firstname'] ?? "";
+            $strMail        = $_POST['mail'] ?? "";
+            $strPwd         = $_POST['pwd'] ?? "";
 
             $arrError = array();
             if (count($_POST) > 0) { // Le formulaire est envoyé
@@ -153,19 +164,26 @@
             }
 
             // Création des variables d'affichage
-            $strTitle = "Créer un compte";
-            $strH1 = "Créer un compte";
-            $strMetaDesc = "Créer un compte";
-            $strDesc = "Page de création de compte";
+            $this->_arrData['strTitle']     = "Créer un compte";
+            $this->_arrData['strH1']        = "Créer un compte";
+            $this->_arrData['strMetaDesc']  = "Créer un compte";
+            $this->_arrData['strDesc']      = "Page de création de compte";
+
+            $this->_arrData['arrError']     = $arrError;
+            $this->_arrData['strName']      = $strName;
+            $this->_arrData['strFirstname'] = $strFirstname;
+            $this->_arrData['strMail']      = $strMail;
 
             // Variable technique
-            $strPage = "create_account";
+            $this->_arrData['strPage']      = "create_account";
 
-            require("views/_partial/header.php");
-            include("views/create_account.php");
-            require("views/_partial/footer.php");
+            $this->_display("create_account");
         }
 
+        /**
+         * Page de modification d'un compte
+         * @return void
+         */
         public function edit_account(){
             if(!isset($_SESSION['user'])){ // utilisateur non connecté
                 header("Location:error_403.php");
@@ -230,19 +248,19 @@
             }
 
             // Création des variables d'affichage
-            $strTitle 		= "Modifier son compte";
-            $strH1 			= "Modifier son compte";
-            $strMetaDesc 	= "Modifier son compte";
-            $strDesc		= "Page de modification de son compte";
+            $this->_arrData['strTitle']     = "Modifier son compte";
+            $this->_arrData['strH1'] 		= "Modifier son compte";
+            $this->_arrData['strMetaDesc'] 	= "Modifier son compte";
+            $this->_arrData['strDesc']		= "Page de modification de son compte";
+
+            $this->_arrData['objUser']      = $objUser;
+            $this->_arrData['arrError']     = $arrError;
+            $this->_arrData['strPseudo']    = $strPseudo;
 
             // Variable technique
-            $strPage		= "edit_account";
+            $this->_arrData['strPage']		= "edit_account";
 
-            require("views/_partial/header.php");
-            include("views/edit_account.php");
-            require("views/_partial/footer.php");
+            $this->_display("edit_account");
         }
-
-
 
     }

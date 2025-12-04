@@ -4,6 +4,8 @@
 
     // Inlcusion des mother
     require("models/mother_model.php");
+    require("controllers/mother_controller.php");
+
     // Récupération des informations dans l'URL
     $ctrl   = $_GET['ctrl']??'articles';
     $action = $_GET['action']??'home';

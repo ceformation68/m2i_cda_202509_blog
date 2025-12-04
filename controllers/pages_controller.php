@@ -1,50 +1,58 @@
 <?php
 
-    class PagesCtrl {
+/**
+ * Controller des pages de contenu
+ */
+    class PagesCtrl extends MotherCtrl {
 
-
+        /**
+         * A propos
+         * @return void
+         */
         public function about(){	// Création des variables d'affichage
-            $strTitle 		= "À propos";
-            $strH1 			= "À propos";
-            $strMetaDesc 	= "Découvrez qui nous sommes : notre équipe passionnée de développement web, notre mission et nos valeurs. Formations et expertise en programmation.";
-            $strDesc		= "Découvrez notre histoire, notre équipe et notre passion pour le développement web";
+            $this->_arrData['strTitle'] 		= "À propos";
+            $this->_arrData['strH1'] 			= "À propos";
+            $this->_arrData['strMetaDesc'] 	    = "Découvrez qui nous sommes : notre équipe passionnée de développement web, notre mission et nos valeurs. Formations et expertise en programmation.";
+            $this->_arrData['strDesc']		    = "Découvrez notre histoire, notre équipe et notre passion pour le développement web";
 
             // Variable technique
-            $strPage		= "about";
+            $this->_arrData['strPage']		    = "about";
 
-            require("views/_partial/header.php");
-            include("views/about.php");
-            require("views/_partial/footer.php");
+            $this->_display("about");
         }
 
+        /**
+         * Contact
+         * @return void
+         */
         public function contact(){
             // Création des variables d'affichage
-            $strTitle 		= "Contact";
-            $strH1 			= "Contact";
-            $strMetaDesc 	= "Découvrez qui nous sommes : notre équipe passionnée de développement web, notre mission et nos valeurs. Formations et expertise en programmation.";
-            $strDesc		= "Contactez-nous pour toute question";
+            $this->_arrData['strTitle'] 	= "Contact";
+            $this->_arrData['strH1']	    = "Contact";
+            $this->_arrData['strMetaDesc'] 	= "Découvrez qui nous sommes : notre équipe passionnée de développement web, notre mission et nos valeurs. Formations et expertise en programmation.";
+            $this->_arrData['strDesc']		= "Contactez-nous pour toute question";
 
             // Variable technique
-            $strPage		= "contact";
+            $this->_arrData['strPage']		= "contact";
 
-            require("views/_partial/header.php");
-            include("views/contact.php");
-            require("views/_partial/footer.php");
+            $this->_display("contact");
         }
 
+        /**
+         * Mentions légales
+         * @return void
+         */
         public function mentions(){
             // Création des variables d'affichage
-            $strTitle 		= "Mentions légales";
-            $strH1 			= "Mentions légales";
-            $strMetaDesc 	= "Découvrez qui nous sommes : notre équipe passionnée de développement web, notre mission et nos valeurs. Formations et expertise en programmation.";
-            $strDesc		= "Informations légales et politique de confidentialité";
+            $this->_arrData['strTitle'] 	= "Mentions légales";
+            $this->_arrData['strH1'] 		= "Mentions légales";
+            $this->_arrData['strMetaDesc'] 	= "Découvrez qui nous sommes : notre équipe passionnée de développement web, notre mission et nos valeurs. Formations et expertise en programmation.";
+            $this->_arrData['strDesc']		= "Informations légales et politique de confidentialité";
 
             // Variable technique
-            $strPage		= "mentions";
+            $this->_arrData['strPage']		= "mentions";
 
-            require("views/_partial/header.php");
-            include("views/mentions.php");
-            require("views/_partial/footer.php");
+            $this->_display("contact");
         }
 
     }

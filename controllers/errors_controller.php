@@ -1,37 +1,39 @@
 <?php
 
-    class ErrorsCtrl {
+    class ErrorsCtrl extends MotherCtrl {
 
-
+        /**
+         * Page d'erreur 404
+         * @return void
+         */
         public function error_404(){
             // Création des variables d'affichage
-            $strTitle 		= "Erreur 404";
-            $strH1 			= "Erreur 404";
-            $strMetaDesc 	= "Erreur 404";
-            $strDesc		= "La page n'existe pas";
+            $this->_arrData['strTitle']		= "Erreur 404";
+            $this->_arrData['strH1'] 		= "Erreur 404";
+            $this->_arrData['strMetaDesc'] 	= "Erreur 404";
+            $this->_arrData['strDesc']		= "La page n'existe pas";
 
             // Variable technique
-            $strPage		= "error_404";
+            $this->_arrData['strPage']		= "error_404";
 
-            require("views/_partial/header.php");
-            include("views/error_404.php");
-            require("views/_partial/footer.php");
+            $this->_display("error_404");
         }
 
+        /**
+         * Page d'erreur 403
+         * @return void
+         */
         public function error_403(){
             // Création des variables d'affichage
-            $strTitle 		= "Erreur 403";
-            $strH1 			= "Erreur 403";
-            $strMetaDesc 	= "Erreur 403";
-            $strDesc		= "Vous devez vous connecter pour accéder à ces informations";
+            $this->_arrData['strTitle']		= "Erreur 403";
+            $this->_arrData['strH1']		= "Erreur 403";
+            $this->_arrData['strMetaDesc'] 	= "Erreur 403";
+            $this->_arrData['strDesc']		= "Vous devez vous connecter pour accéder à ces informations";
 
             // Variable technique
-            $strPage		= "error_403";
+            $this->_arrData['strPage']		= "error_403";
 
-            require("views/_partial/header.php");
-            include("views/error_403.php");
-            require("views/_partial/footer.php");
+            $this->_display("error_403");
         }
-
 
     }

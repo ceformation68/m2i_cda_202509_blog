@@ -1,6 +1,6 @@
         <!-- Formulaire de recherche -->
         <section class="mb-5" aria-labelledby="search-heading">
-            <form name="formSearch" method="get" action="#" class="border rounded p-4 bg-light">
+            <form name="formSearch" method="post" class="border rounded p-4 bg-light">
                 <h3 id="search-heading" class="h4 mb-4">
                     <i class="fas fa-search me-2" aria-hidden="true"></i>
                     Rechercher des articles
