@@ -16,7 +16,7 @@
                             name="keywords"
                             placeholder="Ex: JavaScript, CSS..."
                             aria-describedby="keywords-help"
-							value="<?php echo $strKeywords; ?>">
+							value="<?php echo $arrSearch['strKeywords']??''; ?>">
                         <small id="keywords-help" class="form-text text-muted">
                             Recherchez dans les titres et contenus
                         </small>
@@ -28,7 +28,7 @@
                             <option value="0">Tous les auteurs</option>
 							<?php foreach($arrUsers as $arrDetUser){ ?>
 								<option 
-									<?php echo ($intAuthor == $arrDetUser['user_id'])?" selected ":""; ?>
+									<?php echo ($arrSearch['intAuthor'] == $arrDetUser['user_id'])?" selected ":""; ?>
 									value="<?php echo $arrDetUser['user_id']; ?>">
 									<?php echo $arrDetUser['user_name'].' '.$arrDetUser['user_firstname']; ?>
 								</option>
@@ -46,7 +46,7 @@
                                     name="period" 
                                     id="period-exact" 
                                     value="0" 
-                                    <?php echo ($intPeriod == 0)?" checked ":"" ?> 
+                                    <?php echo ($arrSearch['intPeriod'] == 0)?" checked ":"" ?>
                                     aria-controls="date-exact date-range">
                                 <label class="form-check-label" for="period-exact">
                                     Date exacte
@@ -59,7 +59,7 @@
                                     name="period" 
                                     id="period-range" 
                                     value="1"
-									<?php echo ($intPeriod == 1)?" checked ":"" ?> 
+									<?php echo ($arrSearch['intPeriod'] == 1)?" checked ":"" ?>
                                     aria-controls="date-exact date-range">
                                 <label class="form-check-label" for="period-range">
                                     Période
@@ -75,7 +75,7 @@
                             class="form-control" 
                             id="date" 
                             name="date"
-							value="<?php echo $strDate; ?>"
+							value="<?php echo $arrSearch['strDate']; ?>"
                             aria-describedby="date-help">
                         <small id="date-help" class="form-text text-muted">
                             Format: JJ/MM/AAAA
@@ -91,7 +91,7 @@
                                     class="form-control" 
                                     id="startdate" 
                                     name="startdate"
-									value="<?php echo $strStartDate; ?>">
+									value="<?php echo $arrSearch['strStartDate']; ?>">
                             </div>
                             <div class="col-md-6">
                                 <label for="enddate" class="form-label">Date de fin</label>
@@ -100,7 +100,7 @@
                                     class="form-control" 
                                     id="enddate" 
                                     name="enddate"
-									value="<?php echo $strEndDate; ?>">
+									value="<?php echo $arrSearch['strEndDate']; ?>">
                             </div>
                         </div>
                     </div>

@@ -1,12 +1,20 @@
 <?php
 
-
-
+/**
+ * Modèle des articles
+ */
 class Article_model extends Model_mother
 {
-    public function findAll($intLimit = 0, $strKeywords = "", $intAuthor = 0,
-                            $intPeriod = 0, $strDate = "", $strStartDate = "", $strEndDate = "")
+    public $_arrSearch = [];
+
+    /**
+     * Recherche des articles
+     * @param int $intLimit Nombre d'articles à afficher
+     * @return array
+     */
+    public function findAll(int $intLimit = 0)
     {
+
         // Récupérer les Articles
         $strQuery = "SELECT articles.*, users.user_name, users.user_firstname	 
 							FROM articles 
@@ -14,24 +22,29 @@ class Article_model extends Model_mother
 
         $strWhereAnd = " WHERE ";
         // Traitement des mots clés
-        //$strKeywords	= $_GET['keywords']??'';
+        $strKeywords	= $this->_arrSearch['strKeywords']??'';
         if ($strKeywords != "") {
             $strQuery .= $strWhereAnd . " (article_title LIKE '%" . $strKeywords . "%' 
 								OR article_content LIKE '%" . $strKeywords . "%') ";
             $strWhereAnd = " AND ";
         }
         // Traitement du créateur
+        $intAuthor	= $this->_arrSearch['intAuthor']??0;
         if ($intAuthor > 0) {
             $strQuery .= $strWhereAnd . " user_id = " . $intAuthor;
             $strWhereAnd = " AND ";
         }
         // Traitement de date exacte
+        $intPeriod	= $this->_arrSearch['intPeriod']??0;
+        $strDate	= $this->_arrSearch['strDate']??"";
         if ($intPeriod == 0 && $strDate != "") {
             $strQuery .= $strWhereAnd . " article_createdate = '" . $strDate . "'";
             $strWhereAnd = " AND ";
         }
 
         // Traitement de période de date
+        $strStartDate	= $this->_arrSearch['strStartDate']??"";
+        $strEndDate	    = $this->_arrSearch['strEndDate']??"";
         if ($intPeriod == 1 && $strStartDate != "" && $strEndDate != "") {
             $strQuery .= $strWhereAnd . " article_createdate 
 											BETWEEN '" . $strStartDate . "'

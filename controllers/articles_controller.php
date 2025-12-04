@@ -44,22 +44,17 @@
 
             $objArticleModel    = new Article_model();
 
-            $strKeywords	= $_POST['keywords']??'';
-            $intAuthor		= $_POST['author']??0;
-            $intPeriod		= $_POST['period']??0;
-            $strDate		= $_POST['date']??"";
-            $strStartDate	= $_POST['startdate']??"";
-            $strEndDate		= $_POST['enddate']??"";
+            $objArticleModel->_arrSearch = array(
+                'strKeywords'	=> $_POST['keywords']??'',
+                'intAuthor'		=> $_POST['author']??0,
+                'intPeriod'		=> $_POST['period']??0,
+                'strDate'		=> $_POST['date']??"",
+                'strStartDate'	=> $_POST['startdate']??"",
+                'strEndDate'	=> $_POST['enddate']??"");
+
             // Récupération des articles
-            $this->_arrData['arrArticles'] 	= $objArticleModel->findAll(0, $strKeywords, $intAuthor, $intPeriod, $strDate, $strStartDate, $strEndDate);
-
-            $this->_arrData['strKeywords']		= $strKeywords;
-            $this->_arrData['intAuthor']		= $intAuthor;
-            $this->_arrData['intPeriod']		= $intPeriod;
-            $this->_arrData['strDate']		    = $strDate;
-            $this->_arrData['strStartDate']	    = $strStartDate;
-            $this->_arrData['strEndDate']		= $strEndDate;
-
+            $this->_arrData['arrArticles'] 	= $objArticleModel->findAll(0);
+            $this->_arrData['arrSearch']	= $objArticleModel->_arrSearch;
 
             // Récupération des utilisateurs
             require("models/user_model.php");
