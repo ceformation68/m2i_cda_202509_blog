@@ -1,6 +1,14 @@
 <?php
+
+/**
+ * Modèle des utilisateurs
+ */
 	class User_model extends Model_mother{
-		
+
+        /**
+         * Recherche de tous les utilisateurs
+         * @return array Tableau des utilisateurs
+         */
 		public function findAllUser(){
 			// Récupérer les Utilisateurs
 			$strQuery	= "SELECT user_id, user_name, user_firstname
@@ -9,8 +17,14 @@
 			$arrUsers	= $this->_db->query($strQuery)->fetchAll();
 			return $arrUsers;
 		}
-		
-		function getUserByMailAndPwd($strMail, $strPwd){
+
+        /**
+         * Recherche d'un utilisateur par son mail et son mot de passe
+         * @param string $strMail Mail de l'utilisateur
+         * @param string $strPwd Mot de passe
+         * @return mixed Tableau de l'utilisateur ou false si non trouvé
+         */
+		function getUserByMailAndPwd(string $strMail, string $strPwd) : array|bool{
 			// Récupérer l'utilisateur
 			$strQuery	= "SELECT user_id, user_name, user_firstname
 							FROM users
@@ -25,8 +39,13 @@
 			$rqPrepare->execute();
 			return $rqPrepare->fetch();
 		}
-		
-		function getUserById($intId){
+
+        /**
+         * Recherche d'un utilisateur par son id
+         * @param int $intId Identifiant de l'utilisateur
+         * @return mixed Tableau de l'utilisateur ou false si non trouvé
+         */
+		function getUserById(int $intId):array|bool{
 			// Récupérer l'utilisateur
 			$strQuery	= "SELECT user_id, user_name, user_firstname, user_mail
 							FROM users
@@ -39,8 +58,13 @@
 			$rqPrepare->execute();
 			return $rqPrepare->fetch();		
 		}
-		
-		function addUser($objUser){
+
+        /**
+         * Insertion d'un utilisateur en bdd
+         * @param $objUser objet de l'utilisateur
+         * @return bool statut de l'insertion
+         */
+		function addUser(object $objUser):bool{
 			// Ajouter un utilisateur en BDD
 			$strQuery	= "INSERT INTO users (user_name, user_firstname, 
 							user_mail, user_pwd)
@@ -54,8 +78,13 @@
 			
 			return $rqPrepare->execute();
 		}
-		
-		function editUser($objUser){
+
+        /**
+         * Modification d'un utilisateur
+         * @param object $objUser objet utilisateur
+         * @return bool statut de la modification
+         */
+		function editUser(object $objUser):bool{
 			// Modifier un utilisateur en BDD
 			$strQuery	= "UPDATE users 
 							SET user_name = :name
