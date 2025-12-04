@@ -1,17 +1,17 @@
 <form method="post" class="row">
 	<div class="mb-2 col-6">
 		<label>Nom</label>
-		<input type="text" name="name" value="<?php echo $strName; ?>" 
+		<input type="text" name="name" value="<?php echo $objUser->getName(); ?>"
 			class="form-control  <?php if(isset($arrError['name'])) { echo "is-invalid"; } ?>" />
 	</div>
 	<div class="mb-2 col-6">
 		<label>Prénom</label>
-		<input type="text" name="firstname"  value="<?php echo $strFirstname; ?>"
+		<input type="text" name="firstname"  value="<?php echo $objUser->getFirstname(); ?>"
 			class="form-control  <?php if(isset($arrError['firstname'])) { echo "is-invalid"; } ?>" />
 	</div>
 	<div class="mb-2 col-12">
 		<label>Mail</label>
-		<input type="text" name="mail"  value="<?php echo $strMail; ?>"
+		<input type="text" name="mail"  value="<?php echo $objUser->getMail(); ?>"
 			class="form-control  <?php if(isset($arrError['mail'])) { echo "is-invalid"; } ?>" />
 	</div>
 	<div class="mb-2 col-6">

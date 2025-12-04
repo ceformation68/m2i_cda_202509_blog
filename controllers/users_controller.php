@@ -3,7 +3,7 @@
     use PHPMailer\PHPMailer\Exception;
 
     require("models/user_model.php");
-
+    require("entities/user_entity.php");
 
     /**
      * Controller des utilisateurs
@@ -86,39 +86,38 @@
 
             include "config/config.php";
 
+            $objUser = new User;
+
             // Récupérer les données du formulaire
-            $strName        = $_POST['name'] ?? "";
-            $strFirstname   = $_POST['firstname'] ?? "";
-            $strMail        = $_POST['mail'] ?? "";
-            $strPwd         = $_POST['pwd'] ?? "";
+            $objUser->hydrate($_POST);
 
             $arrError = array();
             if (count($_POST) > 0) { // Le formulaire est envoyé
                 // Filtrer les données
-                $strName = htmlspecialchars(trim($strName));
+                $strName = htmlspecialchars(trim($objUser->getName()), ENT_QUOTES);
 
                 // Tester les données reçues
                 if ($strName == "") {
                     $arrError['name'] = "Le nom est obligatoire";
                 }
-                if ($strFirstname == "") {
+                if ($objUser->getFirstname() == "") {
                     $arrError['firstname'] = "Le prénom est obligatoire";
                 }
-                if ($strMail == "") {
+                if ($objUser->getMail() == "") {
                     $arrError['mail'] = "Le mail est obligatoire";
-                } else if (!filter_var($strMail, FILTER_VALIDATE_EMAIL)) {
+                } else if (!filter_var($objUser->getMail(), FILTER_VALIDATE_EMAIL)) {
                     $arrError['mail'] = "Le mail est invalide";
                 }
-                if ($strPwd == "") {
+                if ($objUser->getPwd() == "") {
                     $arrError['pwd'] = "Le mot de passe est obligatoire";
-                } else if ($strPwd != $_POST['confirm_pwd']) {
+                } else if ($objUser->getPwd() != $_POST['confirm_pwd']) {
                     $arrError['pwd'] = "Le mot de passe doit être identique à sa confirmation";
                 }
 
                 // Si pas d'erreur => insertion en bdd
                 if (count($arrError) == 0) {
                     $objUserModel = new User_model();
-                    $boolInsert = $objUserModel->addUser($strName, $strFirstname, $strMail, $strPwd);
+                    $boolInsert = $objUserModel->addUser($objUser);
                     if ($boolInsert) {
                         // Si insertion ok
                         // => Envoyer le mail de demande de confirmation du compte
@@ -141,7 +140,7 @@
                         // Expéditeur
                         $objMail->setFrom('contact@ce-formation.com', 'christel');
                         // Destinataire
-                        $objMail->addAddress($strMail, $strName);
+                        $objMail->addAddress($objUser->getMail(), $strName);
                         // Sujet
                         $objMail->Subject = "Création du compte - confirmation";
                         // Contenu du mail
@@ -170,9 +169,7 @@
             $this->_arrData['strDesc']      = "Page de création de compte";
 
             $this->_arrData['arrError']     = $arrError;
-            $this->_arrData['strName']      = $strName;
-            $this->_arrData['strFirstname'] = $strFirstname;
-            $this->_arrData['strMail']      = $strMail;
+            $this->_arrData['objUser']      = $objUser;
 
             // Variable technique
             $this->_arrData['strPage']      = "create_account";
@@ -194,7 +191,6 @@
             $objUserModel	= new User_model();
             $arrUser		= $objUserModel->getUserById($_SESSION['user']['user_id']);
 
-            require("entities/user_entity.php");
             $objUser		= new User();
             $objUser->hydrate($arrUser);
 

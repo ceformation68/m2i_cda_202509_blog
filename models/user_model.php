@@ -40,17 +40,17 @@
 			return $rqPrepare->fetch();		
 		}
 		
-		function addUser($strName, $strFirstname, $strMail, $strPwd){
+		function addUser($objUser){
 			// Ajouter un utilisateur en BDD
 			$strQuery	= "INSERT INTO users (user_name, user_firstname, 
 							user_mail, user_pwd)
 							VALUES (:name, :firstname, :mail, :pwd)";
 			
 			$rqPrepare	= $this->_db->prepare($strQuery);
-			$rqPrepare->bindValue(":name", $strName, PDO::PARAM_STR);
-			$rqPrepare->bindValue(":firstname", $strFirstname, PDO::PARAM_STR);
-			$rqPrepare->bindValue(":mail", $strMail, PDO::PARAM_STR);
-			$rqPrepare->bindValue(":pwd", $strPwd, PDO::PARAM_STR);
+			$rqPrepare->bindValue(":name", $objUser->getName(), PDO::PARAM_STR);
+			$rqPrepare->bindValue(":firstname", $objUser->getFirstname(), PDO::PARAM_STR);
+			$rqPrepare->bindValue(":mail", $objUser->getMail(), PDO::PARAM_STR);
+			$rqPrepare->bindValue(":pwd", $objUser->getPwd(), PDO::PARAM_STR);
 			
 			return $rqPrepare->execute();
 		}

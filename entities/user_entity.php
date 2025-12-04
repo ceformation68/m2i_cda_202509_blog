@@ -2,9 +2,9 @@
 	class User {
 		// Déclaration des attributs d'un utilisateur
 		private int $_id;
-		private string $_name;
-		private string $_firstname;
-		private string $_mail;
+		private string $_name='';
+		private string $_firstname='';
+		private string $_mail='';
 		private string $_pwd;
 		
 		/** 
