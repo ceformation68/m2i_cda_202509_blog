@@ -1,32 +1,3 @@
-<?php
-	// Création des variables d'affichage
-	$strTitle 		= "Blog - Tous les articles";
-	$strH1 			= "Mon blog";
-	$strMetaDesc 	= "Découvrez qui nous sommes : notre équipe passionnée de développement web, notre mission et nos valeurs. Formations et expertise en programmation.";
-	$strDesc		= "Découvrez notre histoire, notre équipe et notre passion pour le développement web";
-	
-	// Variable technique
-	$strPage		= "blog";
-	
-	require("_partial/header.php");
-	
-	require("article_model.php");	
-	
-	$strKeywords	= $_GET['keywords']??'';
-	$intAuthor		= $_GET['author']??0;
-	$intPeriod		= $_GET['period']??0;
-	$strDate		= $_GET['date']??"";
-	$strStartDate	= $_GET['startdate']??"";
-	$strEndDate		= $_GET['enddate']??"";
-	// Récupération des articles
-	$arrArticles 	= findAll(0, $strKeywords, $intAuthor, $intPeriod, $strDate, $strStartDate, $strEndDate);
-	
-	// Récupération des utilisateurs
-	require("user_model.php");
-	$arrUsers 		= findAllUser();
-//	var_dump($arrUsers);
-
-?>
         <!-- Formulaire de recherche -->
         <section class="mb-5" aria-labelledby="search-heading">
             <form name="formSearch" method="get" action="#" class="border rounded p-4 bg-light">
@@ -168,14 +139,10 @@
 					$strCreatorName = $arrDetArticle['user_name'].' '.$arrDetArticle['user_firstname'];
 					// Traitement du résumé
 					$strLength		= 45;
-					$strSummary		= substr($arrDetArticle['article_content'], 0, $strLength).((strlen($arrDetArticle['article_content'])>$strLength)?"...":"");
+					$strSummary		= blog . phpsubstr($arrDetArticle['article_content'], 0, $strLength) . ((strlen($arrDetArticle['article_content']) > $strLength) ? "..." : "");
 					// Inclure le template de l'article
 					include("_partial/article.php");
 				}
 			?>				
             </div>
         </section>
-		
-<?php
-	require("_partial/footer.php");
-?>		

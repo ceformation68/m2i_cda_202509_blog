@@ -6,15 +6,15 @@
 		</li>
 		<li class="nav-item">
 			<a class="nav-link link-body-emphasis <?php if ($strPage == "about") { echo "active"; } ?>" 
-				href="about.php" <?php if ($strPage == "about") { echo "aria-current='page'"; } ?> >À propos</a>
+				href="index.php?ctrl=pages&action=about" <?php if ($strPage == "about") { echo "aria-current='page'"; } ?> >À propos</a>
 		</li>
 		<li class="nav-item">
 			<a class="nav-link link-body-emphasis <?php if ($strPage == "blog") { echo "active"; } ?>" 
-				href="blog.php" <?php if ($strPage == "blog") { echo "aria-current='page'"; } ?> >Blog</a>
+				href="index.php?ctrl=articles&action=blog" <?php if ($strPage == "blog") { echo "aria-current='page'"; } ?> >Blog</a>
 		</li>
 		<li class="nav-item">
 			<a class="nav-link link-body-emphasis <?php if ($strPage == "contact") { echo "active"; } ?>"
-				href="contact.php" <?php if ($strPage == "contact") { echo "aria-current='page'"; } ?>>Contact</a>
+				href="index.php?ctrl=pages&action=contact" <?php if ($strPage == "contact") { echo "aria-current='page'"; } ?>>Contact</a>
 		</li>
 	</ul>
 </nav>

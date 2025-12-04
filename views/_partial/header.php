@@ -43,7 +43,7 @@
                         <h1 class="h3 mb-0">Mon Blog</h1>
                     </a>
                 </div>
-				<?php include("_partial/nav_user.php"); ?>
+				<?php include("views/_partial/nav_user.php"); ?>
             </div>
         </header>
 
@@ -66,5 +66,6 @@
         </section>
 
 <?php
-	require("_partial/message.php");
+	require("views/_partial/message.php");
 ?>
+

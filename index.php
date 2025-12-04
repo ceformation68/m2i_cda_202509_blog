@@ -1,47 +1,26 @@
 <?php
-	// Création des variables d'affichage
-	$strTitle 		= "Accueil";
-	$strH1 			= "Accueil";
-	$strMetaDesc 	= "Découvrez les derniers articles sur le développement web : JavaScript, HTML, CSS, PHP et bases de données. Tutoriels et conseils pour développeurs.";
-	$strDesc		= "Découvrez nos derniers articles sur le développement web";
-	
-	// Variable technique
-	$strPage		= "index";
-	
-	require("_partial/header.php");
+    $ctrl   = $_GET['ctrl']??'articles';
+    $action = $_GET['action']??'home';
 
-	require("article_model.php");
-	
-	$arrArticles = findAll(4);
-	
-?>
-        <section aria-label="Articles récents">
-            <h2 class="visually-hidden">Les 4 derniers articles</h2>
-            <div class="row mb-2">
-			<?php 
-				foreach ($arrArticles as $arrDetArticle){
-					//var_dump($arrDetArticle);
-					// Traitement de date
-					$objDate			= new DateTime($arrDetArticle['article_createdate']);
-					$objDateFormatter	= new IntlDateFormatter(
-												"fr_FR", // langue
-												IntlDateFormatter::LONG,  // format de date
-												IntlDateFormatter::NONE, // format heure
-												);
-					//$strDate 		= $objDate->format("d/m/Y");
-					$strDate 		= $objDateFormatter->format($objDate);
-					// Traitement du créateur
-					$strCreatorName = $arrDetArticle['user_name'].' '.$arrDetArticle['user_firstname'];
-					// Traitement du résumé
-					$strLength		= 45;
-					$strSummary		= substr($arrDetArticle['article_content'], 0, $strLength).((strlen($arrDetArticle['article_content'])>$strLength)?"...":"");
-					// Inclure le template de l'article
-					include("_partial/article.php");
-				}
-			?>
+    $bool404 = false;
+    $strCtrlFile = 'controllers/'.$ctrl.'_controller.php';
+    if (file_exists($strCtrlFile)) {
+        require_once($strCtrlFile);
+        $strCtrlName    = ucfirst($ctrl).'Ctrl';
+        if (class_exists($strCtrlName)) {
+            $objCtrl = new $strCtrlName();
+            if (method_exists($objCtrl, $action)) {
+                $objCtrl->$action();
+            }else{
+                $bool404 = true;
+            }
+        }else{
+            $bool404 = true;
+        }
+    }else{
+        $bool404 = true;
+    }
 
-            </div>
-        </section>
-<?php
-	require("_partial/footer.php");
-?>
+    if ($bool404) {
+        header("Location:index.php?ctrl=errors&action=error_404");
+    }
